@@ -88,7 +88,7 @@ describe('Comments Endpoints', function() {
 
     requiredFields.forEach(field => {
       const testArticle = testArticles[0]
-      //const testUser = testUsers[0]
+      const testUser = testUsers[0]
       const newComment = {
         text: 'Test new comment',
         article_id: testArticle.id,

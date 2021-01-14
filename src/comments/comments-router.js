@@ -18,7 +18,7 @@ commentsRouter
         return res.status(400).json({
           error: `Missing '${key}' in request body`
         })
-        newComment.user_id = req.uesr.id
+        newComment.user_id = req.user.id
 
     CommentsService.insertComment(
       req.app.get('db'),

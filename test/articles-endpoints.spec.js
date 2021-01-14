@@ -4,7 +4,7 @@ const supertest = require('supertest')
 const app = require('../src/app')
 const helpers = require('./test-helpers')
 
-describe.only('Articles Endpoints', function() {
+describe('Articles Endpoints', function() {
   let db
 
   const {
@@ -13,10 +13,7 @@ describe.only('Articles Endpoints', function() {
     testComments,
   } = helpers.makeArticlesFixtures()
 
-  function makeAuthHeader(user){
-    const token = Buffer.from(`${user.user_name}:${user.password}`).toString('base64')
-    return `Basic ${token}`
-  }
+
 
   before('make knex instance', () => {
     db = knex({
@@ -32,7 +29,7 @@ describe.only('Articles Endpoints', function() {
 
   afterEach('cleanup', () => helpers.cleanTables(db))
 
-  describe.only(`Protected endpoints` , () => {
+  describe(`Protected endpoints` , () => {
     beforeEach(`insert articles` , () => 
       helpers.seedArticlesTables(
         db,
@@ -70,14 +67,14 @@ describe.only('Articles Endpoints', function() {
         const userInvalidCreds = {user_name : 'user-not', password: 'existy'}
         return supertest(app)
             .get(endpoint.path)
-            .set('Authorization' , makeAuthHeader(userInvalidCreds))
+            .set('Authorization' , helpers.makeAuthHeader(userInvalidCreds))
             .expect(401, {error : `Unauthorized Request`})
       })
       it(`responds 401 'Unauthorized request' when invalid password` , ()=>{
         const userInvalidPass = {user_name : testUsers[0].user_name, password : 'wrong' }
         return supertest(app)
             .get(endpoint.path)
-            .set('Authorization', makeAuthHeader(userInvalidPass))
+            .set('Authorization', helpers.makeAuthHeader(userInvalidPass))
             .expect(401, {error: `Unauthorized Request`})
      
       })
@@ -145,16 +142,16 @@ describe.only('Articles Endpoints', function() {
     })
   })
 
-  describe.only(`GET /api/articles/:article_id`, () => {
+  describe(`GET /api/articles/:article_id`, () => {
     context(`Given no articles`, () => {
       beforeEach(()=>
-      db.into('blogful_users').insert(testUsers)
+      helpers.seedUser(db, testUsers)
       )
       it(`responds with 404`, () => {
         const articleId = 123456
         return supertest(app)
           .get(`/api/articles/${articleId}`)
-          .set('Authorization' , makeAuthHeader(testUsers[0]))
+          .set('Authorization' , helpers.makeAuthHeader(testUsers[0]))
           .expect(404, { error: `Article doesn't exist` })
       })
     })
@@ -179,7 +176,7 @@ describe.only('Articles Endpoints', function() {
 
         return supertest(app)
           .get(`/api/articles/${articleId}`)
-          .set('Authorization' , makeAuthHeader(testUsers[0]))
+          .set('Authorization' , helpers.makeAuthHeader(testUsers[0]))
           .expect(200, expectedArticle)
       })
     })
@@ -215,13 +212,13 @@ describe.only('Articles Endpoints', function() {
   describe(`GET /api/articles/:article_id/comments`, () => {
     context(`Given no articles`, () => {
       beforeEach(()=>{
-        db.into('blogful_users').insert(testUsers)
+       helpers.seedUser(db, testUsers)
       })
       it(`responds with 404`, () => {
         const articleId = 123456
         return supertest(app)
           .get(`/api/articles/${articleId}/comments`)
-          .set('Authorization' , makeAuthHeader(testUsers[0]))
+          .set('Authorization' , helpers.makeAuthHeader(testUsers[0]))
           .expect(404, { error: `Article doesn't exist` })
       })
     })
@@ -244,7 +241,7 @@ describe.only('Articles Endpoints', function() {
 
         return supertest(app)
           .get(`/api/articles/${articleId}/comments`)
-          .set('Authorization' , makeAuthHeader(testUsers[0]))
+          .set('Authorization' , helpers.makeAuthHeader(testUsers[0]))
           .expect(200, expectedComments)
       })
     })
