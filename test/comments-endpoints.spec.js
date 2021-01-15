@@ -4,7 +4,7 @@ const supertest = require('supertest')
 const app = require('../src/app')
 const helpers = require('./test-helpers')
 
-describe('Comments Endpoints', function() {
+describe.only('Comments Endpoints', function() {
   let db
 
   const {
@@ -35,13 +35,7 @@ describe('Comments Endpoints', function() {
       )
     )
 
-    it(`Responds 401 'Unauthorized Request' when invalid password`, ()=>{
-      const userInvalidPass = {user_name : testUsers[0].user_name, password : 'wrong'}
-      return supertest(app)
-            .post(`/api/comments`)
-            .set('Authorization' , helpers.makeAuthHeader(userInvalidPass))
-            .expect(401, {error : `Unauthorized Request`})
-    })
+   
 
     it(`creates an comment, responding with 201 and the new comment`, function() {
       this.retries(3)
@@ -96,7 +90,6 @@ describe('Comments Endpoints', function() {
 
       it(`responds with 400 and an error message when the '${field}' is missing`, () => {
         delete newComment[field]
-
         return supertest(app)
           .post('/api/comments')
           .set('Authorization' , helpers.makeAuthHeader(testUser))

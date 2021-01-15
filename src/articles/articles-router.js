@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 const express = require('express')
 const ArticlesService = require('./articles-service')
-const {requireAuth} = require('../middleware/basic-auth');
+const {requireAuth} = require('../middleware/jwt-auth');
 
 const articlesRouter = express.Router()
 

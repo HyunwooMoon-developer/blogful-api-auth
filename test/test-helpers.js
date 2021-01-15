@@ -2,6 +2,7 @@
 /* eslint-disable no-undef */
 
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 function makeUsersArray() {
   return [
@@ -274,9 +275,12 @@ function seedMaliciousArticle(db, user, article) {
 }
 
 
-function makeAuthHeader(user){
-  const token = Buffer.from(`${user.user_name}:${user.password}`).toString('base64')
-  return `Basic ${token}`
+function makeAuthHeader(user, secret = process.env.JWT_SECRET){
+  const token = jwt.sign({user_id: user.id}, secret, {
+    subject: user.user_name,
+    algorithm : 'HS256',
+  })
+  return `Bearer ${token}`
 }
 
 module.exports = {
