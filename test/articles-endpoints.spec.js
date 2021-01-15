@@ -4,7 +4,7 @@ const supertest = require('supertest')
 const app = require('../src/app')
 const helpers = require('./test-helpers')
 
-describe.only('Articles Endpoints', function() {
+describe('Articles Endpoints', function() {
   let db
 
   const {
