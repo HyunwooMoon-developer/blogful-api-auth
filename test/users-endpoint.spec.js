@@ -6,7 +6,7 @@ const supertest = require('supertest');
 const app = require('../src/app');
 const helpers = require('./test-helpers');
 
-describe.only('Users Endpoints', function(){
+describe('Users Endpoints', function(){
     let db
 
     const {testUsers} = helpers.makeArticlesFixtures()

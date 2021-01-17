@@ -2,6 +2,7 @@
 /* eslint-disable no-undef */
 const { compare } = require('bcryptjs');
 const express = require('express');
+const { requireAuth } = require('../middleware/jwt-auth');
 const AuthService = require('./auth-service');
 
 const authRouter = express.Router();
@@ -40,6 +41,14 @@ authRouter
         })
     })
     .catch(next)
+})
+
+authRouter.post('/refresh', requireAuth, (req, res) => {
+    const sub = req.user.user_name
+    const payload = {user_id : req.user.id}
+    res.send({
+        authToken : AuthService.createJWT(sub, payload)
+    })
 })
 
 module.exports = authRouter;
